@@ -3,7 +3,7 @@ terraform {
 
   backend "s3" {
     encrypt        = true
-    bucket         = "terraform-poc-2"
+    bucket         = "terraform-poc-clienta"
     key            = "terraform-poc-2"
 
     region       = "us-west-2"
@@ -12,12 +12,16 @@ terraform {
     # external_id  = "Terraform"
   }
 }
+provider "aws" {
+  version = "~> 2.0"
+  region = "us-west-2"
+}
 
 data "terraform_remote_state" "shared_information" {
   backend = "s3"
   config = {
     encrypt        = true
-    bucket         = "terraform-upgrade-poc"
+    bucket         = "terraform-upgrade13-poc"
     key            = "terraform-upgrade-poc"
     
 
@@ -28,16 +32,12 @@ data "terraform_remote_state" "shared_information" {
   }
 }
 
-locals {
-  client_information = data.terraform_remote_state.shared_information
-}
 
-
-resource "aws_instance" "web-2" {
-  ami           = data.terraform_remote_state.shared_information.aws_instance.ami
-  instance_type = "t2.micro"
+resource "aws_s3_bucket" "test" {
+  bucket = data.terraform_remote_state.shared_information.outputs.client_a.instance_id
 
   tags = {
-    Name = "HelloWorld-2"
+    Name        = "My bucket"
+    Environment = "Dev"
   }
 }

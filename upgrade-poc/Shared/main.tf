@@ -3,7 +3,7 @@ terraform {
 
   backend "s3" {
     encrypt        = true
-    bucket         = "terraform-upgrade-poc"
+    bucket         = "terraform-upgrade13-poc"
     key            = "terraform-upgrade-poc"
     region       = "us-west-2"
     session_name = "Terraform"
